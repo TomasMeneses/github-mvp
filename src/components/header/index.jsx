@@ -1,36 +1,76 @@
-/* eslint linebreak-style: ["error", "windows"] */
-import React, { useState, useCallback } from 'react';
+
+import React, { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+
 import { Input, InputGroup, InputRightElement,
      Stack, IconButton, Popover,
      PopoverTrigger, PopoverContent,
-     PopoverHeader, PopoverArrow, PopoverCloseButton,
-     PopoverBody, ButtonGroup, Button } from "@chakra-ui/react"
+     PopoverHeader, PopoverArrow, Divider,
+     PopoverBody, ButtonGroup, Button, useDisclosure  } from "@chakra-ui/react"
 
 import { FaSearch } from 'react-icons/fa';
 import { BsStar, BsCircleHalf, BsFillGridFill } from 'react-icons/bs';
 import { ImPlus } from 'react-icons/im';
 
+import api from '../../services/githubService'
 
-import { Container, Box, InnerBox, FaGithubBig, MandatoryField, SpacedText, ErrorContainer, StyledMdError } from './styles';
+
+import { Container, Box, InnerBox, FaGithubBig, MandatoryField, SpacedText, ErrorContainer, StyledMdError, InnerBoxGithub } from './styles';
 
 
-const Header = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Header = ({addRepositoryFunction}) => {
 
-  const toggle = () => setIsOpen(!isOpen);
+  //const [isOpen, setIsOpen] = useState(false);
+  //const toggle = () => setIsOpen(!isOpen);
 
-  const [repositoryValue, setRepositoryValue] = useState('')
+  const { onOpen, onClose, isOpen } = useDisclosure();
+
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [isApiError, setIsApiError] = useState(false);
+
+  const [repositoryValue, setRepositoryValue] = useState('');
+
+  const [repositoryFromGithub, setRepositoryFromGithub] = useState('');
+
   const handleRepositoryChange = (event) => {
-    setRepositoryValue(event.target.value)
-    console.log(repositoryValue);
+    setRepositoryValue(event.target.value);
   }
+
+  const getRepositoryFromGithub = async (params) => {
+    try{
+
+        const response = await api.get(params);
+        setRepositoryFromGithub(response.data);
+        setIsApiError(false);
+        setIsDisabled(false);
+    }catch(error) {
+        setIsDisabled(true);
+        setIsApiError(true);
+    }
+    
+  };
+
+ 
+  const firstUpdate = useRef(true);
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+        firstUpdate.current = false;
+        return;
+    }
+    const timeoutId = setTimeout(() => {
+        getRepositoryFromGithub(repositoryValue);
+        if(!repositoryValue){
+            setIsDisabled(true);
+        }
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [repositoryValue]);
 
   return (
     <Container>
       <Box>
-        <InnerBox>
+        <InnerBoxGithub>
             <FaGithubBig color="black"/>
-        </InnerBox>
+        </InnerBoxGithub>
         <InnerBox>
             Github Compare
         </InnerBox>
@@ -59,7 +99,12 @@ const Header = (props) => {
             <BsFillGridFill/>
         </InnerBox>
         <InnerBox>
-            <Popover placement="bottom-end">
+            <Popover 
+            placement="bottom-end"
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
+            >
                 <PopoverTrigger>
                     <IconButton
                     colorScheme="blue"
@@ -70,19 +115,19 @@ const Header = (props) => {
                 <PopoverContent>
                     <PopoverHeader fontWeight="semibold">New repository</PopoverHeader>
                     <PopoverArrow />
-                    <PopoverCloseButton />
                     <PopoverBody fontWeight="semibold">
                         <SpacedText>
                             Repository <MandatoryField>*</MandatoryField>
                         </SpacedText>
                     {/* <Input ref={ref} id={props.id} {...props} /> */}
                     <Input value={repositoryValue}
-                    isInvalid={true}
+                    isInvalid={isApiError}
+                    focusBorderColor="none"
                     errorBorderColor="red.400"
                     onChange={handleRepositoryChange}
                     />
                     {
-                        true && <div>
+                        isApiError && <div>
                                 <ErrorContainer>
                                 <StyledMdError/>
                                 This is an API-feedback-error
@@ -91,11 +136,12 @@ const Header = (props) => {
                     }
                     </PopoverBody>
                     <PopoverBody>
+                    <Divider mb="2" orientation="horizontal" />
                         <ButtonGroup d="flex" justifyContent="flex-end">
-                            <Button variant="outline" onClick={()=>{console.log('Cancel')}}>
+                            <Button variant="outline" onClick={() => onClose()}>
                                 Cancel
                             </Button>
-                            <Button isDisabled={false} colorScheme="blue" onClick={()=>{console.log('Add')}}>
+                            <Button isDisabled={isDisabled} colorScheme="blue" onClick={ () => addRepositoryFunction(repositoryFromGithub) }>
                                 Add
                             </Button>
                         </ButtonGroup>

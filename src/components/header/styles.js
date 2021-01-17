@@ -5,11 +5,11 @@ import { MdError } from 'react-icons/md';
 export const Container = styled.div`
     display: flex;
     flex-direction: row;
-    background-color: #F8F9FA;
-    height: 65px;
+    height: 90px;
     align-items: center;
     justify-content: center;
     font-family: 'Open Sans', sans-serif;
+    background-color: white;
 `;
 
 export const Box = styled.div`
@@ -27,7 +27,17 @@ export const InnerBox  = styled.div`
     margin: 5px;
 `;
 
+export const InnerBoxGithub  = styled.div`
+    flex: 1;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+`;
+
+
 export const FaGithubBig  = styled(FaGithub)`
+    flex: 1;
     width: 30px;
     height: 30px;
 `;
