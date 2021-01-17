@@ -1,5 +1,4 @@
-/* eslint linebreak-style: ["error", "windows"] */
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 
 
 import { AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, Button, Center, Divider, Box } from "@chakra-ui/react"

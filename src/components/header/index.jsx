@@ -5,11 +5,14 @@ import { Input, InputGroup, InputRightElement,
      Stack, IconButton, Popover,
      PopoverTrigger, PopoverContent,
      PopoverHeader, PopoverArrow, Divider,
-     PopoverBody, ButtonGroup, Button, useDisclosure  } from "@chakra-ui/react"
+     PopoverBody, ButtonGroup, Button, useDisclosure  } from "@chakra-ui/react";
+
+     
 
 import { FaSearch } from 'react-icons/fa';
 import { BsStar, BsCircleHalf, BsFillGridFill } from 'react-icons/bs';
 import { ImPlus } from 'react-icons/im';
+import { differenceInCalendarMonths } from 'date-fns';
 
 import api from '../../services/githubService'
 
@@ -39,7 +42,16 @@ const Header = ({addRepositoryFunction}) => {
     try{
 
         const response = await api.get(params);
-        setRepositoryFromGithub(response.data);
+        let data = response.data;
+        data.created_at = differenceInCalendarMonths(
+            new Date(),
+            new Date(data.created_at)
+        ) + ' months ago';
+        data.updated_at = differenceInCalendarMonths(
+            new Date(),
+            new Date(data.updated_at)
+        ) + ' months ago';
+        setRepositoryFromGithub(data);
         setIsApiError(false);
         setIsDisabled(false);
     }catch(error) {
