@@ -9,7 +9,7 @@
     <li>Axios</li>
     <li>Date-fns</li>
     <li><a href="https://chakra-ui.com/">Chakra-ui</a></li>
-    <li><a href="https://react-icons.github.io/">React Icons</a></li>
+    <li><a href="https://react-icons.github.io/react-icons/">React Icons</a></li>
     <li>Styled components</li>
 </ul>
 
