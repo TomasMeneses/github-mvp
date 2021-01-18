@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { FaGithub } from 'react-icons/fa';
 import { MdError } from 'react-icons/md';
+import { BsStar } from 'react-icons/bs';
 
 export const Container = styled.div`
     display: flex;
@@ -10,6 +11,10 @@ export const Container = styled.div`
     justify-content: center;
     font-family: 'Open Sans', sans-serif;
     background-color: white;
+`;
+
+export const StyledBsStar = styled(BsStar)`
+    cursor: pointer;
 `;
 
 export const Box = styled.div`
@@ -24,6 +29,15 @@ export const Box = styled.div`
 
 export const InnerBox  = styled.div`
     flex: 1;
+    margin: 5px;
+`;
+
+export const InnerBoxFilterAndOrder  = styled.div`
+
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     margin: 5px;
 `;
 

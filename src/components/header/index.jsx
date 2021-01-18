@@ -1,29 +1,39 @@
 
-import React, { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 
 import { Input, InputGroup, InputRightElement,
      Stack, IconButton, Popover,
      PopoverTrigger, PopoverContent,
      PopoverHeader, PopoverArrow, Divider,
-     PopoverBody, ButtonGroup, Button, useDisclosure  } from "@chakra-ui/react";
+     PopoverBody, ButtonGroup, Button, useDisclosure, Menu, MenuButton, MenuList, MenuGroup, MenuItem  } from "@chakra-ui/react";
 
      
 
 import { FaSearch } from 'react-icons/fa';
-import { BsStar, BsCircleHalf, BsFillGridFill } from 'react-icons/bs';
+import { BsCircleHalf, BsFillGridFill } from 'react-icons/bs';
 import { ImPlus } from 'react-icons/im';
-import { differenceInCalendarMonths } from 'date-fns';
+import { RiArrowDownSFill } from 'react-icons/ri';
+import { formatDistance } from 'date-fns';
 
 import api from '../../services/githubService'
 
 
-import { Container, Box, InnerBox, FaGithubBig, MandatoryField, SpacedText, ErrorContainer, StyledMdError, InnerBoxGithub } from './styles';
+import { Container, Box, InnerBox, FaGithubBig, MandatoryField, SpacedText, ErrorContainer, StyledMdError, InnerBoxGithub, InnerBoxFilterAndOrder, StyledBsStar } from './styles';
 
 
-const Header = ({addRepositoryFunction}) => {
+const Header = (
+    {
+    addRepositoryFunction,
+    orderRepositorysByStars,
+    orderRepositorysByLastCommit,
+    orderRepositorysByAge,
+    orderRepositorysByOpenIssues,
+    orderRepositorysByForks,
+    showOnlyFavorites,
+    filterRepositoriesByName
+}) => {
 
-  //const [isOpen, setIsOpen] = useState(false);
-  //const toggle = () => setIsOpen(!isOpen);
+
 
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -31,26 +41,32 @@ const Header = ({addRepositoryFunction}) => {
   const [isApiError, setIsApiError] = useState(false);
 
   const [repositoryValue, setRepositoryValue] = useState('');
+  const [repositorySearchValue, setRepositorySearchValue] = useState('');
 
   const [repositoryFromGithub, setRepositoryFromGithub] = useState('');
 
   const handleRepositoryChange = (event) => {
     setRepositoryValue(event.target.value);
-  }
+  };
+
+  const handleRepositorySearchChange = (event) => {
+    setRepositorySearchValue(event.target.value);
+  };
 
   const getRepositoryFromGithub = async (params) => {
     try{
 
         const response = await api.get(params);
         let data = response.data;
-        data.created_at = differenceInCalendarMonths(
-            new Date(),
-            new Date(data.created_at)
-        ) + ' months ago';
-        data.updated_at = differenceInCalendarMonths(
-            new Date(),
-            new Date(data.updated_at)
-        ) + ' months ago';
+        data.isFavorite = false;
+        data.ageCreated = formatDistance(
+            new Date(data.created_at),
+            new Date()
+        );
+        data.ageCommit = formatDistance(
+            new Date(data.updated_at),
+            new Date()
+        );
         setRepositoryFromGithub(data);
         setIsApiError(false);
         setIsDisabled(false);
@@ -63,6 +79,8 @@ const Header = ({addRepositoryFunction}) => {
 
  
   const firstUpdate = useRef(true);
+  const firstUpdateSearch = useRef(true);
+  
   useLayoutEffect(() => {
     if (firstUpdate.current) {
         firstUpdate.current = false;
@@ -77,6 +95,17 @@ const Header = ({addRepositoryFunction}) => {
     return () => clearTimeout(timeoutId);
   }, [repositoryValue]);
 
+  useLayoutEffect(() => {
+    if (firstUpdateSearch.current) {
+        firstUpdateSearch.current = false;
+        return;
+    }
+    const timeoutId = setTimeout(() => {
+        filterRepositoriesByName(repositorySearchValue)
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [repositorySearchValue]);
+
   return (
     <Container>
       <Box>
@@ -86,23 +115,37 @@ const Header = ({addRepositoryFunction}) => {
         <InnerBox>
             Github Compare
         </InnerBox>
-        <InnerBox>
+        <InnerBoxFilterAndOrder>
+        <Menu>
+            <MenuButton as={Button} rightIcon={<RiArrowDownSFill/>}>
             Filter and order
-        </InnerBox>
+            </MenuButton>
+        <MenuList>
+            <MenuGroup title="ORDER BY">
+            <MenuItem onClick={() => orderRepositorysByStars()}>Stars</MenuItem>
+            <MenuItem onClick={() => orderRepositorysByForks()}>Forks</MenuItem>
+            <MenuItem onClick={() => orderRepositorysByOpenIssues()}>Open Issues</MenuItem>
+            <MenuItem onClick={() => orderRepositorysByAge()}>Age</MenuItem>
+            <MenuItem onClick={() => orderRepositorysByLastCommit()}>Last Commit</MenuItem>
+            </MenuGroup>
+        </MenuList>
+        </Menu>
+            
+        </InnerBoxFilterAndOrder>
       </Box>
       <Box>
         <InnerBox>
             <Stack spacing={1}>
                 <InputGroup>
-                    <Input variant="filled" placeholder="Search" />
-                    <InputRightElement children={<FaSearch color="black" />} />
+                    <Input onChange={handleRepositorySearchChange} variant="filled" placeholder="Search" />
+                    <InputRightElement  children={<FaSearch color="black" />} />
                 </InputGroup>
             </Stack>
         </InnerBox>
       </Box>
       <Box>
         <InnerBox>
-            <BsStar/>
+            <StyledBsStar onClick={()=> showOnlyFavorites()}/>
         </InnerBox>
         <InnerBox>
             <BsCircleHalf/>
