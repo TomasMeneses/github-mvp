@@ -24,11 +24,11 @@ import { Container, Box, InnerBox, FaGithubBig, MandatoryField, SpacedText, Erro
 const Header = (
     {
     addRepositoryFunction,
-    orderRepositorysByStars,
-    orderRepositorysByLastCommit,
-    orderRepositorysByAge,
-    orderRepositorysByOpenIssues,
-    orderRepositorysByForks,
+    orderRepositoriesByStars,
+    orderRepositoriesByLastCommit,
+    orderRepositoriesByAge,
+    orderRepositoriesByOpenIssues,
+    orderRepositoriesByForks,
     showOnlyFavorites,
     filterRepositoriesByName
 }) => {
@@ -122,11 +122,11 @@ const Header = (
             </MenuButton>
         <MenuList>
             <MenuGroup title="ORDER BY">
-            <MenuItem onClick={() => orderRepositorysByStars()}>Stars</MenuItem>
-            <MenuItem onClick={() => orderRepositorysByForks()}>Forks</MenuItem>
-            <MenuItem onClick={() => orderRepositorysByOpenIssues()}>Open Issues</MenuItem>
-            <MenuItem onClick={() => orderRepositorysByAge()}>Age</MenuItem>
-            <MenuItem onClick={() => orderRepositorysByLastCommit()}>Last Commit</MenuItem>
+            <MenuItem onClick={() => orderRepositoriesByStars()}>Stars</MenuItem>
+            <MenuItem onClick={() => orderRepositoriesByForks()}>Forks</MenuItem>
+            <MenuItem onClick={() => orderRepositoriesByOpenIssues()}>Open Issues</MenuItem>
+            <MenuItem onClick={() => orderRepositoriesByAge()}>Age</MenuItem>
+            <MenuItem onClick={() => orderRepositoriesByLastCommit()}>Last Commit</MenuItem>
             </MenuGroup>
         </MenuList>
         </Menu>

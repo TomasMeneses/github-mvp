@@ -16,18 +16,18 @@ const ContentContainer = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
-  const [listRepositorys, setListRepositorys] = useState([]);
+  const [listRepositories, setListRepositories] = useState([]);
 
   const handleAddRepository = useCallback((repository) => {
-    setListRepositorys([
-      ...listRepositorys,
+    setListRepositories([
+      ...listRepositories,
       repository,
     ]);
   
-  },[listRepositorys]);
+  },[listRepositories]);
 
-  const handleOrderRepositorysByStars = useCallback(()=> {
-    let listToOrder = [...listRepositorys];
+  const handleOrderRepositoriesByStars = useCallback(()=> {
+    let listToOrder = [...listRepositories];
     listToOrder.sort((a,b) => {
       var keyA = a.stargazers_count;
       var keyB = b.stargazers_count;
@@ -36,12 +36,12 @@ const ContentContainer = (props) => {
       return 0;
     });
 
-    setListRepositorys(listToOrder);
+    setListRepositories(listToOrder);
 
-  }, [listRepositorys]);
+  }, [listRepositories]);
 
-  const handleOrderRepositorysByForks = useCallback(()=> {
-    let listToOrder = [...listRepositorys];
+  const handleOrderRepositoriesByForks = useCallback(()=> {
+    let listToOrder = [...listRepositories];
     listToOrder.sort((a,b) => {
       var keyA = a.forks;
       var keyB = b.forks;
@@ -50,13 +50,13 @@ const ContentContainer = (props) => {
       return 0;
     });
 
-    setListRepositorys(listToOrder);
+    setListRepositories(listToOrder);
     console.log(listToOrder);
 
-  }, [listRepositorys]);
+  }, [listRepositories]);
 
-  const handleOrderRepositorysByOpenIssues = useCallback(()=> {
-    let listToOrder = [...listRepositorys];
+  const handleOrderRepositoriesByOpenIssues = useCallback(()=> {
+    let listToOrder = [...listRepositories];
     listToOrder.sort((a,b) => {
       var keyA = a.open_issues_count;
       var keyB = b.open_issues_count;
@@ -65,13 +65,13 @@ const ContentContainer = (props) => {
       return 0;
     });
 
-    setListRepositorys(listToOrder);
+    setListRepositories(listToOrder);
     console.log(listToOrder);
 
-  }, [listRepositorys]);
+  }, [listRepositories]);
 
-  const handleOrderRepositorysByAge = useCallback(()=> {
-    let listToOrder = [...listRepositorys];
+  const handleOrderRepositoriesByAge = useCallback(()=> {
+    let listToOrder = [...listRepositories];
     listToOrder.sort((a,b) => {
       var keyA = new Date(a.created_at);
       var keyB = new Date(b.created_at);
@@ -80,13 +80,13 @@ const ContentContainer = (props) => {
         return 0;
       });
 
-    setListRepositorys(listToOrder);
+    setListRepositories(listToOrder);
     console.log(listToOrder);
 
-  }, [listRepositorys]);
+  }, [listRepositories]);
 
-  const handleOrderRepositorysByLastCommit = useCallback(()=> {
-    let listToOrder = [...listRepositorys];
+  const handleOrderRepositoriesByLastCommit = useCallback(()=> {
+    let listToOrder = [...listRepositories];
     listToOrder.sort((a,b) => {
       var keyA = new Date(a.updated_at);
       var keyB = new Date(b.updated_at);
@@ -95,18 +95,18 @@ const ContentContainer = (props) => {
         return 0;
       });
 
-    setListRepositorys(listToOrder);
+    setListRepositories(listToOrder);
     console.log(listToOrder);
 
-  }, [listRepositorys]);
+  }, [listRepositories]);
 
   const handleRemoveRepository =  (index) => {
-      const values = [...listRepositorys];
+      const values = [...listRepositories];
       values.splice(index,1)
       // const newList = values.filter((repository, index) => {
       //   if(indexToRemove !== index) return repository;
       // });
-      setListRepositorys(values);
+      setListRepositories(values);
       setIsOpen(false);
     };
 
@@ -121,31 +121,31 @@ const ContentContainer = (props) => {
 
 
   const handleCheckRepoAsFavorite = ( index ) => {
-    let repos = [...listRepositorys];
+    let repos = [...listRepositories];
     
     repos[index].isFavorite = !repos[index].isFavorite;
 
-    setListRepositorys(repos);
+    setListRepositories(repos);
   };
 
   const handleShowOnlyFavorites = () => {
-    const repos = [...listRepositorys];
+    const repos = [...listRepositories];
     let favRepos = repos.filter(repo => {
       if(repo.isFavorite) {
         return repo;
       }
     });
-    setListRepositorys(favRepos)
+    setListRepositories(favRepos)
   };
 
   const handleFilterRepositoryByName = (repoName) => {
-    const repos = [...listRepositorys];
+    const repos = [...listRepositories];
     let reposByName = repos.filter(repo => {
       if(repo.full_name === repoName) {
         return repo;
       }
     });
-    setListRepositorys(reposByName);
+    setListRepositories(reposByName);
   };
   
 
@@ -154,16 +154,16 @@ const ContentContainer = (props) => {
   return (
     <Container>
       <Header addRepositoryFunction={ handleAddRepository }
-      orderRepositorysByStars={ handleOrderRepositorysByStars }
-      orderRepositorysByForks={ handleOrderRepositorysByForks }
-      orderRepositorysByOpenIssues= { handleOrderRepositorysByOpenIssues }
-      orderRepositorysByAge= { handleOrderRepositorysByAge }
-      orderRepositorysByLastCommit= { handleOrderRepositorysByLastCommit }
+      orderRepositoriesByStars={ handleOrderRepositoriesByStars }
+      orderRepositoriesByForks={ handleOrderRepositoriesByForks }
+      orderRepositoriesByOpenIssues= { handleOrderRepositoriesByOpenIssues }
+      orderRepositoriesByAge= { handleOrderRepositoriesByAge }
+      orderRepositoriesByLastCommit= { handleOrderRepositoriesByLastCommit }
       showOnlyFavorites = { handleShowOnlyFavorites }
       filterRepositoriesByName = { handleFilterRepositoryByName }
        />
       <Wrap spacing="10px" justify="left">
-        {listRepositorys.map((repository, index) => (
+        {listRepositories.map((repository, index) => (
             
             <div key={repository.id.toString()}>
 
