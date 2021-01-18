@@ -25,9 +25,9 @@
 
 <h3>Melhorias Futuras:</h3>
 <ul>
-    <li>Filtragem por favoritos</li>
-    <li>Filtragem por Nome</li>
-    <li>Tornar o bloco de código responsável por renderizar o card das informações em um componente</li>
+    <li>Filtragem por favoritos *Refatoração*</li>
+    <li>Filtragem por Nome *Refatoração*</li>
+    <li>Tornar o bloco de código responsável por renderizar o card das informações em um componente *Refatoração*</li>
     <li>Adição de loaders ou spiners durante requisições</li>
     <li>Testes unitários</li>
 </ul>
